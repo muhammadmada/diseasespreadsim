@@ -1,0 +1,5 @@
+{
+    "diseaseFactor" : [
+        {"name":"disease", "R0": 0,"alpha" :1 ,"beta":0, "gamma":0}
+    ]
+}
