@@ -1,7 +1,6 @@
 from scipy.integrate import odeint
 import numpy as np
 import matplotlib.pyplot as plt
-%matplotlib inline
 
 #Model params
 c = float(3.6)
