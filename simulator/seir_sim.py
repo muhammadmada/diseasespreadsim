@@ -1,6 +1,8 @@
 from scipy.integrate import odeint
 import numpy as np
 import matplotlib.pyplot as plt
+import json
+import mpld3
 
 #Plotting
 def modseirplot(t, S, Sq, E, Eq, I, H, R, L=None, D=None, R0=None, Alpha=None, CFR=None):
@@ -29,20 +31,39 @@ def modseirplot(t, S, Sq, E, Eq, I, H, R, L=None, D=None, R0=None, Alpha=None, C
   if L is not None:
      plt.title("Lockdown after {} days".format(L))
   plt.show()
-#Model params
+mpld3.fig_to_html()
+
+#Defining derivative equation part
+def deriv(y, t, N, Beta, DeltaI, DeltaQ, GammaI, GammaH):
+    S, Sq, E, Eq, I, H, R, D = y
+    dSdt = int(-(Beta*c + c*q*(1-Beta)*S*(I+Theta+E)+ Lambda*Sq))
+    dSqdt = int((1-Beta)*c*q*S*(I+Theta*E)-Lambda*Sq)
+    dEdt = int(Beta*c*(1-q)*S*(I+Theta*E)-Sigma*E)
+    dEqdt = int(Beta*c*q*S*(I+Theta*E)-DeltaQ*Eq)
+    dIdt = int(Sigma*E-(deltaI+Alpha+GammaI)*I)
+    dHdt = int(deltaI*I+DeltaQ*Eq-(Alpha+GammaH)*H)
+    dRdt = int(GammaI*I+GammaH*H)
+    dDdt = Alpha*(I+H)
+    return dSdt, dSqdt, dEdt, dEqdt, dIdt, dHdt, dRdt, dDdt
+#Model params and data(Some datas need to be connected with mongodb yes)
 c = float(3.6)
-Beta = float(6.93*10^-11)
-DeltaI = float(0.13)
-DeltaQ = float(0.13)
-GammaI = float(0.003)
-GammaH = float(0.009)
-Q = float(9*10^-7)
-Alpha = float(0.0001)
-Theta = float(0.6)
-Lambda = float(1/14)
-T = float(40)
-t = float(0.1)
-NN = float(T/t)
+Beta = float(6.93*10^-11) #Population simulated
+DeltaI = float(0.13) #1/days of infection, infected
+DeltaQ = float(0.13) #1/days of infection, quarantined
+GammaI = float(0.003) #1/days of incubation, infected
+GammaH = float(0.009) #1/days of incubation, hospitalized
+Q = float(9*10^-7) #Quarantine ratio
+Alpha = float(0.0001) #Death rate
+Theta = float(0.6) #Ratio of transmission
+Lambda = float(1/14) #1/quarantine days
+T = float(40) #Sim timespan
+t = float(0.1) #Forgot what this means
+NN = float(T/t) #Same with this
+N = 2 #Population in a region
+Inf =  123#Infection period(Days)
+Inc = 2141#Incubation period(Days)
+L = 133 # Lockdown period (Days), may add date inplemented = date lifted function
+
 #Initial value below
 S = int(13.95*10^8)
 E = int(4007)
@@ -53,24 +74,16 @@ H = Eq + I
 R = int(34)
 D = int(25)
 AA = [S, E , I , Sq, Eq, H, R]
-
-if ii == 1/NN:
-    Sigma = float((1/7 - 1/3)/(1 + exp((ii*t-4)/ii*(t/0.2))+1/3)
-    dS = int(-(Beta*c + c*q*(1-Beta)*S*(I+Theta+E)+ Lambda*Sq)
-    dE =  int(Beta*c*(1-q)*S*(I+Theta*E)-Sigma*E)
-    dI =  int(Sigma*E-(deltaI+Alpha+GammaI)*I)
-    dSq = int(1-Beta)*c*q*S*(I+Theta*E)-Lambda*Sq)
-    dEq = int(Beta*c*q*S*(I+Theta*E)-DeltaQ*Eq)
-    dH =  int(deltaI*I+DeltaQ*Eq-(Alpha+GammaH)*H)
-    dR =  int(GammaI*I+GammaH*H)
-    dD = alpha*(I+H);
-    #Euler integration algorithm
-    S =S+dS*t
-    E = E+dE*t
-    I = I+dI*t
-    Sq = Sq+dSq*t
-    Eq = Eq+dEq*t
-    H = H+dH*t
-    R = R+dR*t
-    AA=[AA; S E I Sq Eq H R]
+Sigma = float((1/7 - 1/3)/(1 + exp((ii*t-4)/ii*(t/0.2))+1/3)
+dS = int(-(Beta*c + c*q*(1-Beta)*S*(I+Theta+E)+ Lambda*Sq)
+dE =  int(Beta*c*(1-q)*S*(I+Theta*E)-Sigma*E)
+dI =  int(Sigma*E-(deltaI+Alpha+GammaI)*I)
+dSq = int(1-Beta)*c*q*S*(I+Theta*E)-Lambda*Sq)
+dEq = int(Beta*c*q*S*(I+Theta*E)-DeltaQ*Eq)
+dH =  int(deltaI*I+DeltaQ*Eq-(Alpha+GammaH)*H)
+dR =  int(GammaI*I+GammaH*H)
+dD = Alpha*(I+H);
+#Equation plotting
+t = np.linspace(0, 100, 100)
+y0 = S0, Sq0, E0, Eq0, I0, H0, R0, D0#S, Sq, E, Eq, I, H, R, D
 
