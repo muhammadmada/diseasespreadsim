@@ -1,8 +1,10 @@
 from scipy.integrate import odeint
 import numpy as np
 import matplotlib.pyplot as plt
-import json
 import mpld3
+#import json  <==== Implement when ready
+
+#Reading JSON db files
 
 #Plotting
 def modseirplot(t, S, Sq, E, Eq, I, H, R, L=None, D=None, R0=None, Alpha=None, CFR=None):
@@ -47,7 +49,10 @@ def deriv(y, t, N, Beta, DeltaI, DeltaQ, GammaI, GammaH):
     return dSdt, dSqdt, dEdt, dEqdt, dIdt, dHdt, dRdt, dDdt
 #Model params and data(Some datas need to be connected with mongodb yes)
 c = float(3.6)
-Beta = float(6.93*10^-11) #Population simulated
+Beta = float(6.93*10^-11) #Equals to R_0*GammaI
+Gamma = int(1) #Refers to plain Gamma from disease, distributed to derivative Gammas
+Inf =  123#Infection period(Days)
+Inc = 2141#Incubation period(Days)
 DeltaI = float(0.13) #1/days of infection, infected
 DeltaQ = float(0.13) #1/days of infection, quarantined
 GammaI = float(0.003) #1/days of incubation, infected
@@ -56,13 +61,11 @@ Q = float(9*10^-7) #Quarantine ratio
 Alpha = float(0.0001) #Death rate
 Theta = float(0.6) #Ratio of transmission
 Lambda = float(1/14) #1/quarantine days
-T = float(40) #Sim timespan
+T = float(40) #Simulation timespan, maybe add progressing time function with starting date
 t = float(0.1) #Forgot what this means
 NN = float(T/t) #Same with this
 N = 2 #Population in a region
-Inf =  123#Infection period(Days)
-Inc = 2141#Incubation period(Days)
-L = 133 # Lockdown period (Days), may add date inplemented = date lifted function
+L = 133 # Lockdown period (Days), may add date implemented + date lifted function
 
 #Initial value below
 S = int(13.95*10^8)
