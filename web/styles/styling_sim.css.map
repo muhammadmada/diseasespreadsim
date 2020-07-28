@@ -1,0 +1,9 @@
+{
+    "version": 3,
+    "mappings": "AAAA,AAAA,IAAI,CAAA;EACA,gBAAgB,EAAE,KAAoC;CACzD;;AACD,AAAA,WAAW,CAAA;EACP,KAAK,EAAE,OACX;CAAC",
+    "sources": [
+        "styling_sim.scss"
+    ],
+    "names": [],
+    "file": "styling_sim.css"
+}

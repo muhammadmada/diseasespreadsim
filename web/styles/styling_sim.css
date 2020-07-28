@@ -1,7 +1,8 @@
-body{
-    background-color:greenyellow ;
+body {
+  background-color: black;
 }
-.header{
-    justify-content: center;
-    background-color: green;
+
+.headermain {
+  color: #ffffff;
 }
+/*# sourceMappingURL=styling_sim.css.map */
